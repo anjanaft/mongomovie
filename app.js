@@ -26,15 +26,13 @@ app.use(function (req, res, next) {
 });
 app.set('view engine','ejs');
 var mongoose=require('mongoose');
-mongoose.connect("mongodb://localhost:27017/stud");
-//mongoose.connect("mongodb+srv://mongodb:mongodb@mycluster-rfooj.mongodb.net/test?retryWrites=true&w=majority");
+mongoose.connect("mongodb://localhost:27017/movie");
+ mongoose.connect("mongodb+srv://anjdb:Anjana@215706@cluster1-kmut5.mongodb.net/test?retryWrites=true&w=majority");
 var MessageModel=mongoose.model('Message',{
-    name:String,
-    mailid:String,
-    phone:String,
-    admno:String,
-    branch:String,
-    college:String
+    mname:String,
+    actor:String,
+    actress:String,
+    director:String
 });
 app.get('/',(req,res)=>
 {
@@ -74,7 +72,7 @@ app.get('/viewApi',(req,res)=>
 app.get('/view',(req,res)=>
 {
     var viewlink="http://localhost:3000/viewApi";
-  // var viewlink="https://angularmessage.herokuapp.com/viewApi";
+ 
     request(viewlink,(error,response,body)=>{
         var data=JSON.parse(body);
         res.render('viewmessage',{data:data});
@@ -82,9 +80,9 @@ app.get('/view',(req,res)=>
 });
 app.post('/searchApi',(req,res)=>{
 
-  //  var phonear=req.params.ph;
-  var admnoar=req.body.admno;
-    MessageModel.find({admno:admnoar},(error,data)=>
+  
+  var movar=req.body.mname;
+    MessageModel.find({mname:movar},(error,data)=>
     {
         if(error)
         {
@@ -99,7 +97,7 @@ app.post('/searchApi',(req,res)=>{
 });
 app.post('/search',(req,res)=>
 {
-    var admnoarg=req.body.admno;
+    var movarg=req.body.mname;
     var viewlink="http://localhost:3000/searchApi"+admnoarg;
   // var viewlink="https://angularmessage.herokuapp.com/searchApi";
     request(viewlink,(error,response,body)=>{
@@ -111,36 +109,6 @@ app.get('/searchform',(req,res)=>{
     res.render('searchform');
 })
 
-//DeleteApi
-app.post('/delApi',(req,res)=>
-{
-    MessageModel.remove({_id:req.body[0]._id},(error,response)=>
-    {
-        if(error)
-        {
-            throw error;
-        }
-        else{
-            res.send(response);
-        }
-    })
-})
-//UpdateApi
-app.post('/updateApi',(req,res)=>
-{
-    console.log(req.body[0])
-    MessageModel.findOneAndUpdate({_id:req.body[0]._id},req.body[0],(error,response)=>
-    {
-         if(error)
-         {
-             console.log(error);
-             throw error;
-         }
-         else{
-             res.send(response);
-         }
-    })
-})
 
 
 app.listen(process.env.PORT || 3002,()=>
